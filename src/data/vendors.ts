@@ -2,7 +2,7 @@ import { Vendor } from "../types/twitter";
 
 const vendors: Vendor[] = [
   {
-    name: "Farris Ismati",
+    name: "Colburn Sanders",
     image:
       "https://pbs.twimg.com/profile_images/1619823390935728128/euNmHNOw_400x400.jpg",
     description: "software engineering, but currently just a food truck",
