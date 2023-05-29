@@ -2,6 +2,8 @@
 
 import AWS from "aws-sdk";
 import { AWSRegions } from "./types/aws";
+import { Vendor } from "./types/twitter";
+import { marshall } from "@aws-sdk/util-dynamodb";
 
 AWS.config.update({ region: AWSRegions.US_EAST_2 });
 
@@ -15,7 +17,7 @@ export const dynamodbCreateTable = async (
 ) => {
   try {
     const result = await dynamoDb.createTable(params).promise();
-    console.log("Table Created", result);
+    console.log("Table created", result);
     return result;
   } catch (e) {
     if (e instanceof Error) {
@@ -24,8 +26,60 @@ export const dynamodbCreateTable = async (
     throw new Error("dynamodbCreateTable error object unknown type");
   }
 };
-// describe a table.
+// retrieve table definition.
+export const dynamodbDescribeTable = async (tableName: string) => {
+  try {
+    const table = await dynamoDb
+      .describeTable({
+        TableName: tableName,
+      })
+      .promise();
+    console.log("Table retrieved", table);
+    return table;
+  } catch (e) {
+    if (e instanceof Error) {
+      return e;
+    }
+    throw new Error("dynamodbDescribeTable error object unknown type");
+  }
+};
 
 // delete a table.
+export const dynamodbDeleteTable = async (tableName: string) => {
+  try {
+    const result = await dynamoDb
+      .deleteTable({
+        TableName: tableName,
+      })
+      .promise();
+
+    console.log("TABLE DELETED", result);
+    return result;
+  } catch (e) {
+    if (e instanceof Error) {
+      return e;
+    }
+    throw new Error("dynamodbDeleteTable error object unknown type");
+  }
+};
 
 // create a record.
+export const dynamodbCreateRecord = async (
+  tableName: string,
+  vendor: Vendor
+) => {
+  try {
+    await dynamoDb
+      .putItem({
+        TableName: tableName,
+        Item: marshall(vendor),
+      })
+      .promise();
+    console.log("Record created");
+  } catch (e) {
+    if (e instanceof Error) {
+      return e;
+    }
+    throw new Error("dynamodbCreateRecord error object unknown type");
+  }
+};
